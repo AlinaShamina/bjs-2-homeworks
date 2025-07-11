@@ -10,8 +10,8 @@
 function validateCount(number) {
 	try {
 		return parseCount(number);
-	} catch (error) {
-		return error;
+	} catch (err) {
+		return err;
 	}
 }
 
@@ -27,14 +27,14 @@ class Triangle {
 	}
 
 	get perimeter() {
-		let x = (this.a + this.b + this.c);
-		return x;
+		let p = (this.a + this.b + this.c);
+		return p;
 	}
 
 	get area() {
-		let x = (this.a + this.b + this.c) / 2;
-		let area = Math.round(1000 * Math.sqrt(x * (x - this.a) * (x - this.b) * (x - this.c)) + Number.EPSILON) / 1000;
-		return area;
+		let p = (this.a + this.b + this.c) / 2;
+		let ar = Math.round(1000 * Math.sqrt(p * (p - this.a) * (p - this.b) * (p - this.c)) + Number.EPSILON) / 1000;
+		return ar;
 	}
 }
 
