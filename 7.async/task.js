@@ -10,7 +10,7 @@ class AlarmClock {
 		} else {
 			let ind = false;
 			if (this.alarmCollection.length > 0) {
-				ind = this.alarmCollection.find((item) => item.time === time); 
+				ind = this.alarmCollection.find((item) => item.time === time);
 			}
 			if (ind) {
 				console.warn('Уже присутствует звонок на это же время');
@@ -25,7 +25,7 @@ class AlarmClock {
 	}
 
 	removeClock(time) {
-		let ind = this.alarmCollection.find((item) => item.time === time); 
+		let ind = this.alarmCollection.find((item) => item.time === time);
 		if (ind) {
 			this.alarmCollection.splice(ind, 1);
 		}
@@ -64,4 +64,21 @@ class AlarmClock {
 		this.stop();
 		this.alarmCollection = [];
 	}
+}
+
+stop() {
+	clearInterval(this.intervalId);
+	this.intervalId = null;
+}
+
+resetAllCalls() {
+	this.alarmCollection.forEach((item) => {
+		item.canCall = true;
+	});
+}
+
+clearAlarms() {
+	this.stop();
+	this.alarmCollection = [];
+}
 }
