@@ -4,40 +4,49 @@ class AlarmClock {
 		this.intervalId = null;
 	}
 
-	addClock(time, callback) {
-		if (!time || !callback) {
+	addClock(time, CBfunc) {
+		if ((arguments.length != 2) || (time === null) || (CBfunc === null)) {
 			throw new Error('Отсутствуют обязательные аргументы');
-		} else if (this.alarmCollection.find(setup => setup.time === time)) {
-			console.warn('Уже присутствует звонок на это же время');
+		} else {
+			let ind = false;
+			if (this.alarmCollection.length > 0) {
+				ind = this.alarmCollection.find((item) => item.time === time); 
+			}
+			if (ind) {
+				console.warn('Уже присутствует звонок на это же время');
+			} else {
+				this.alarmCollection.push({
+					callback: CBfunc,
+					time: time,
+					canCall: true
+				});
+			}
 		}
-		this.alarmCollection.push({
-			time,
-			callback,
-			canCall: true
-		});
 	}
 
 	removeClock(time) {
-		this.alarmCollection = this.alarmCollection.filter(
-			setup => setup.time !== time)
+		let ind = this.alarmCollection.find((item) => item.time === time); 
+		if (ind) {
+			this.alarmCollection.splice(ind, 1);
+		}
 	}
 
 	getCurrentFormattedTime() {
-		return new Date().toLocaleTimeString().slice(0, -3);
+		let date = new Date();
+		return date.toLocaleTimeString().substr(0, 5);
 	}
 
 	start() {
-		if (this.intervalId) {
-			return
+		if (this.intervalId === null) {
+			this.intervalId = setInterval(() => {
+				this.alarmCollection.forEach((item) => {
+					if ((item.time === this.getCurrentFormattedTime()) && item.canCall) {
+						item.canCall = false;
+						item.callback();
+					}
+				});
+			}, 1000);
 		}
-		this.intervalId = setInterval(() => {
-			this.alarmCollection.forEach(setup => {
-				if (setup.time === this.getCurrentFormattedTime() && setup.canCall) {
-					setup.canCall = false;
-					setup.callback();
-				}
-			})
-		}, 1000);
 	}
 
 	stop() {
@@ -46,7 +55,9 @@ class AlarmClock {
 	}
 
 	resetAllCalls() {
-		this.alarmCollection.forEach(setup => setup.canCall = true);
+		this.alarmCollection.forEach((item) => {
+			item.canCall = true;
+		});
 	}
 
 	clearAlarms() {
